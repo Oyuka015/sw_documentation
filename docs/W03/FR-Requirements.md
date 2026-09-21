@@ -45,7 +45,7 @@
 
 - **Тодорхойлолт:** Систем нь хэрэглэгч даалгаврын картыг өөр Канбан багана руу чирж оруулмагц тухайн картны төлөв (status) атрибутыг **шууд шинэчилнэ**.
 - **Зэрэглэл:** `must`
-- **Mock UI Screenshot:** `![Kanban Drag UI](./mockups/fr05-kanban-drag.png)`
+- **Mock UI Screenshot:** ![Kanban Drag UI](./mockups/fr05-kanban-drag.png)
 - **Шалгах дараалал:**
   1. "To-Do" баганад Карт Х үүсгэнэ.
   2. Карт Х-г "Done" багана руу чирж оруулна.
@@ -75,7 +75,7 @@
 
 - **Тодорхойлолт:** Систем нь програмыг дахин эхлүүлэх шаардлагагүйгээр UI өнгөний сонголтыг Light, Dark болгон Системийн горим хооронд шууд өөрчилнө.
 - **Зэрэглэл:** `should`
-- **Mock UI Screenshot:** `![Theme Toggle UI](./mockups/fr08-theme-toggle.png)`
+- **Mock UI Screenshot:** ![Theme Toggle UI](./mockups/fr08-theme-toggle.png)
 - **Шалгах дараалал:**
   1. Settings -> Appearance хэсэг рүү орно.
   2. Dark mode сонгоно.
@@ -95,7 +95,7 @@
 
 - **Тодорхойлолт:** Систем нь Rust, Dart, Python, болон C++ зэрэг хэлнүүдийн код блокод зориулсан синтакс өнгө тодруулалтыг ажиллуулна.
 - **Зэрэглэл:** `should`
-- **Mock UI Screenshot:** `![Code Block UI](./mockups/fr10-code-block.png)`
+- **Mock UI Screenshot:** ![Code Block UI](./mockups/fr10-code-block.png)
 - **Шалгах дараалал:**
   1. Код блок оруулж, хэлийг "Rust" гэж сонгоно.
   2. Rust кодын түлхүүр үгс агуулсан (`fn`, `let`, `match`) snippet буулгана.
@@ -122,11 +122,11 @@
 
 ### FR-13: Ажлын орчны нэгдсэн хайлт (Workspace Search / Global Find)
 
-- **Тодорхойлолт:** Систем нь Ctrl+K / Cmd+K товчоор хайлт хийхэд хайсан текст агуулсан баримтуудын жагсаалтыг 200ммс-ийн дотор буцаана.
+- **Тодорхойлолт:** Систем нь Ctrl+P товчоор хайлт хийхэд хайсан текст агуулсан баримтуудын жагсаалтыг 200ммс-ийн дотор буцаана.
 - **Зэрэглэл:** `must`
-- **Mock UI Screenshot:** `![Global Search UI](./mockups/fr13-global-search.png)`
+- **Mock UI Screenshot:** ![Global Search UI](./mockups/fr13-global-search.png)
 - **Шалгах дараалал:**
-  1. Ctrl+K дарахад хайлтын цонх гарна.
+  1. Ctrl+P дарахад хайлтын цонх гарна.
   2. "Архитектур" гэсэн үг хайна.
 - **Баталгаажуулах нөхцөл:** "Архитектур" гэсэн үг орсон бүх хуудасны дарж болох жагсаалт гарч ирнэ.
 
@@ -134,7 +134,7 @@
 
 - **Тодорхойлолт:** Систем нь хэрэглэгчид локал зургийн файлуудыг (PNG, JPG, WebP) оруулж, локал медиа directory дотор хадгалах боломжийг олгоно.
 - **Зэрэглэл:** `should`
-- **Mock UI Screenshot:** `![Image Block UI](./mockups/fr14-image-block.png)`
+- **Mock UI Screenshot:** ![Image Block UI](./mockups/fr14-image-block.png)
 - **Шалгах дараалал:**
   1. `/image` гэж бичээд `diagram.png` файлыг хуулж оруулна.
 - **Баталгаажуулах нөхцөл:** Зураг editor дотор харагдаж, локал медиа directory руу хуулагдана.
