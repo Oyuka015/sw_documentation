@@ -1,0 +1,31 @@
+name: w05-ci
+on:
+  push:
+    paths:
+      - 'docs/W05/**'
+  workflow_dispatch:
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - run: pip install requests
+      - name: Lint OpenAPI spec
+        run: npx @redocly/cli lint docs/W05/openapi/openapi.yaml
+      - name: Start Prism mock server
+        run: |
+          npx @stoplight/prism-cli mock docs/W05/openapi/openapi.yaml &
+          for i in $(seq 1 30); do
+            curl -s http://127.0.0.1:4010 > /dev/null && break
+            sleep 1
+          done
+      - name: Run webhook code sample against mock
+        working-directory: docs/W05/samples
+        env:
+          API_BASE_URL: http://127.0.0.1:4010
+          CORGLY_TOKEN: dummy_token_for_mock
+        run: python register_webhook.py
