@@ -3,21 +3,228 @@ info:
   title: Corg.ly Pet Onboarding & Translation API
   version: 1.0.0
   description: Official API documentation for pet registration and voice translation.
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
 servers:
   - url: https://api.corg.ly/v1
     description: Production Server
-paths: {}
+security:
+  - BearerAuth: []
+
+paths:
+  /pets:
+    post:
+      operationId: registerPet
+      summary: Register a new pet
+      parameters:
+        - $ref: '#/components/parameters/RequestId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PetCreate'
+            example:
+              pet_name: Einstein
+              breed: Pembroke Welsh Corgi
+      responses:
+        '201':
+          description: Pet registered
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PetProfile'
+              example:
+                pet_id: corgi_98231
+                pet_name: Einstein
+                breed: Pembroke Welsh Corgi
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '500': { $ref: '#/components/responses/ServerError' }
+
+  /pets/{pet_id}:
+    get:
+      operationId: getPet
+      summary: Get a pet profile
+      parameters:
+        - name: pet_id
+          in: path
+          required: true
+          schema: { type: string }
+          example: corgi_98231
+        - $ref: '#/components/parameters/RequestId'
+      responses:
+        '200':
+          description: Pet profile
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PetProfile'
+              example:
+                pet_id: corgi_98231
+                pet_name: Einstein
+                breed: Pembroke Welsh Corgi
+                photo_url: https://media.corg.ly/photos/einstein.jpg
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '500': { $ref: '#/components/responses/ServerError' }
+
+  /pets/upload-photo:
+    post:
+      operationId: uploadPetPhoto
+      summary: Upload a pet photo
+      parameters:
+        - $ref: '#/components/parameters/RequestId'
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [pet_id, photo]
+              properties:
+                pet_id: { type: string, example: corgi_98231 }
+                photo: { type: string, format: binary }
+      responses:
+        '200':
+          description: Photo stored
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  pet_id: { type: string }
+                  photo_url: { type: string }
+              example:
+                pet_id: corgi_98231
+                photo_url: https://media.corg.ly/photos/einstein.jpg
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '500': { $ref: '#/components/responses/ServerError' }
+
+  /audio/translate-bark:
+    post:
+      operationId: translateBark
+      summary: Translate a bark recording
+      parameters:
+        - $ref: '#/components/parameters/RequestId'
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [audio]
+              properties:
+                audio: { type: string, format: binary }
+                language: { type: string, example: en }
+      responses:
+        '200':
+          description: Bark meaning
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  translation: { type: string }
+                  confidence: { type: number }
+              example:
+                translation: I want to play fetch
+                confidence: 0.92
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '500': { $ref: '#/components/responses/ServerError' }
+
+  /webhooks/subscribe:
+    post:
+      operationId: subscribeWebhook
+      summary: Register a webhook for pet activity events
+      parameters:
+        - $ref: '#/components/parameters/RequestId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [callback_url, events]
+              properties:
+                callback_url: { type: string, format: uri }
+                events:
+                  type: array
+                  items: { type: string }
+            example:
+              callback_url: https://myapp.example.com/hooks/corgly
+              events: [pet.photo_uploaded, bark.translated]
+      responses:
+        '201':
+          description: Webhook registered
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  webhook_id: { type: string }
+                  status: { type: string }
+              example:
+                webhook_id: wh_5521
+                status: active
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '500': { $ref: '#/components/responses/ServerError' }
+
 components:
   securitySchemes:
     BearerAuth:
       type: http
       scheme: bearer
       bearerFormat: JWT
+  parameters:
+    RequestId:
+      name: X-Request-Id
+      in: header
+      required: false
+      schema: { type: string }
+      example: req_20261005_001
   schemas:
+    PetCreate:
+      type: object
+      required: [pet_name, breed]
+      properties:
+        pet_name: { type: string, example: Einstein }
+        breed: { type: string, example: Pembroke Welsh Corgi }
     PetProfile:
       type: object
       required: [pet_id, pet_name, breed]
       properties:
-        pet_id: { type: string, example: "corgi_98231" }
-        pet_name: { type: string, example: "Einstein" }
+        pet_id: { type: string, example: corgi_98231 }
+        pet_name: { type: string, example: Einstein }
+        breed: { type: string, example: Pembroke Welsh Corgi }
         photo_url: { type: string, example: "https://media.corg.ly/photos/einstein.jpg" }
+    Error:
+      type: object
+      properties:
+        code: { type: string, example: invalid_request }
+        message: { type: string, example: Field pet_name is required }
+  responses:
+    BadRequest:
+      description: Invalid request
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    Unauthorized:
+      description: Missing or invalid token
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    ServerError:
+      description: Internal server error
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
