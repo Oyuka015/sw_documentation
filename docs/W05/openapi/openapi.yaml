@@ -1,0 +1,23 @@
+openapi: 3.0.3
+info:
+  title: Corg.ly Pet Onboarding & Translation API
+  version: 1.0.0
+  description: Official API documentation for pet registration and voice translation.
+servers:
+  - url: https://api.corg.ly/v1
+    description: Production Server
+paths: {}
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    PetProfile:
+      type: object
+      required: [pet_id, pet_name, breed]
+      properties:
+        pet_id: { type: string, example: "corgi_98231" }
+        pet_name: { type: string, example: "Einstein" }
+        photo_url: { type: string, example: "https://media.corg.ly/photos/einstein.jpg" }
